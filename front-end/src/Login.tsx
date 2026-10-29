@@ -7,8 +7,6 @@ const Login = () => {
 
   function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
-    console.log(email);
-    console.log(password);
   }
 
   return (
@@ -24,7 +22,7 @@ const Login = () => {
         />
         <Input
           placeholder="E-mail"
-          type="text"
+          type="email"
           onChange={(e) => setEmail(e.target.value)}
         />
         <Input
