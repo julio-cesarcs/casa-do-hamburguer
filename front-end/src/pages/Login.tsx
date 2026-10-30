@@ -1,12 +1,10 @@
 import { useState } from "react";
-import Input from "./components/Input";
+import Input from "../components/Input";
+import { Link } from "react-router";
 
-const Register = () => {
-  const [name, setName] = useState("");
+const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [cep, setCep] = useState("");
 
   function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -18,48 +16,30 @@ const Register = () => {
       onSubmit={handleSubmit}
     >
       <div className="flex flex-col items-center justify-center gap-2">
-        <img
-          src="./logo.png"
-          alt="Logo da Casa do Hamburguer"
-          className="mb-4"
-        />
-
-        <Input
-          placeholder="Nome"
-          type="text"
-          onChange={(e) => setName(e.target.value)}
-        />
-
+        <Link to="/">
+          <img
+            src="./logo.png"
+            alt="Logo da Casa do Hamburguer"
+            className="mb-4"
+          />
+        </Link>
         <Input
           placeholder="E-mail"
           type="email"
           onChange={(e) => setEmail(e.target.value)}
         />
-
         <Input
           placeholder="Senha"
           type="password"
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        <Input
-          placeholder="Confirme sua senha"
-          type="password"
-          onChange={(e) => setConfirmPassword(e.target.value)}
-        />
-
-        <Input
-          placeholder="CEP"
-          type="text"
-          onChange={(e) => setCep(e.target.value)}
-        />
-
         <button className="w-full cursor-pointer rounded-md bg-[#c92A03] py-2 text-sm font-bold text-white">
-          Register
+          Login
         </button>
       </div>
     </form>
   );
 };
 
-export default Register;
+export default Login;
