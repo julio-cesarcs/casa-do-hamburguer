@@ -1,13 +1,27 @@
 import express from "express";
 import { connection } from "./src/db.js";
+import { prisma } from "./src/db.js";
 
 const app = express();
+app.use(express.json());
 connection();
 
 app.listen(3000, () => {
   console.log("Servidor rodando na porta 3000");
 });
 
-app.get("/", (req, res) => {
-  res.json("Voce acessou a rota inicial");
+app.get("/", async (req, res) => {
+  const users = await prisma.user.findMany();
+
+  res.json(users);
+});
+
+app.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+  const user = await prisma.user.findFirst({
+    where: { email: email, password: password },
+  });
+
+  // res.json(users);
+  res.json({ user });
 });
