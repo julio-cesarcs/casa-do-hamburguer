@@ -19,10 +19,24 @@ app.get("/", async (req, res) => {
 });
 
 app.post("/login", async (req, res) => {
-  const { email, password } = req.body;
-  const user = await prisma.user.findFirst({
-    where: { email: email, password: password },
-  });
+  try {
+    const { email, password } = req.body;
 
-  res.json({ user });
+    if (!email || !password) {
+      res.status(400).json({ message: "E-mail e senha são obrigatórios." });
+    }
+
+    const user = await prisma.user.findFirst({
+      where: { email: email, password: password },
+    });
+
+    if (!user) {
+      res.status(404).json({ message: "Usuário não encontrado" });
+    }
+
+    res.status(200).json({ user });
+  } catch (error) {
+    res.status(500).json({ message: "Erro no servidor" });
+    return;
+  }
 });
