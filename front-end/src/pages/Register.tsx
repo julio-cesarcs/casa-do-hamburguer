@@ -9,9 +9,62 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [cep, setCep] = useState("");
+  const [error, setError] = useState("");
 
-  function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
+
+    try {
+      if (!name || !email || !password || !cep) {
+        setError("Todas as informações são obrigatórias");
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        setError("Senhas não conferem");
+        return;
+      }
+
+      const response = await fetch("http://localhost:3000/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: name,
+          email: email,
+          password: password,
+          confirmPassword: confirmPassword,
+          cep: cep,
+        }),
+      });
+
+      switch (response.status) {
+        case 201:
+          setName("");
+          setEmail("");
+          setPassword("");
+          setConfirmPassword("");
+          setCep("");
+          setError("");
+          break;
+        case 400:
+          setError("Todas as informações são obrigatórias.");
+          break;
+        case 409:
+          setError("E-mail já cadastrado");
+          break;
+        case 500:
+          setError("Tente novamente mais tarde");
+          break;
+        default:
+          setError("");
+      }
+
+      const data = await response.json();
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+      return;
+    }
   }
 
   return (
@@ -19,12 +72,12 @@ const Register = () => {
       className="flex h-screen items-center justify-center bg-[#161410]"
       onSubmit={handleSubmit}
     >
-      <div className="flex flex-col items-center justify-center gap-2">
+      <div className="flex flex-col justify-center gap-2">
         <Link to="/">
           <img
             src="./logo.png"
             alt="Logo da Casa do Hamburguer"
-            className="mb-4"
+            className="mx-auto mb-4"
           />
         </Link>
 
@@ -32,36 +85,43 @@ const Register = () => {
           placeholder="Nome"
           type="text"
           onChange={(e) => setName(e.target.value)}
+          value={name}
         />
 
         <Input
           placeholder="E-mail"
           type="email"
           onChange={(e) => setEmail(e.target.value)}
+          value={email}
         />
 
         <Input
           placeholder="Senha"
           type="password"
           onChange={(e) => setPassword(e.target.value)}
+          value={password}
         />
 
         <Input
           placeholder="Confirme sua senha"
           type="password"
           onChange={(e) => setConfirmPassword(e.target.value)}
+          value={confirmPassword}
         />
 
         <Input
           placeholder="CEP"
           type="text"
           onChange={(e) => setCep(e.target.value)}
+          value={cep}
         />
-
-        <Button title="Login" />
-        <Link to="/login" className="w-full">
-          <Button title="Já tenho uma conta" variant="outline" />
-        </Link>
+        <p className="text-left text-sm font-bold text-red-500">{error}</p>
+        <div className="mt-3 flex w-full flex-col gap-2">
+          <Button title="Criar conta" type="submit" />
+          <Link to="/login" className="w-full">
+            <Button title="Já tenho uma conta" variant="outline" />
+          </Link>
+        </div>
       </div>
     </form>
   );

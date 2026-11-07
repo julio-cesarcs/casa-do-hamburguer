@@ -28,19 +28,22 @@ const Login = () => {
         }),
       });
 
-      if (response.status === 200) {
-        setError("");
-        const data = await response.json();
-        console.log(data);
+      switch (response.status) {
+        case 200:
+          setError("");
+          break;
+        case 400:
+          setError("Usuário e senha são obrigatórios");
+          break;
+        case 404:
+          setError("Usuário não encontrado");
+          break;
+        default:
+          setError("");
       }
 
-      if (response.status === 400) {
-        setError("Usuário e senha são obrigatórios");
-      }
-
-      if (response.status === 404) {
-        setError("Usuário não encontrado");
-      }
+      const data = await response.json();
+      console.log(data);
     } catch (error) {
       console.log(error);
       return;
@@ -60,9 +63,7 @@ const Login = () => {
             className="mx-auto mb-4"
           />
         </Link>
-
         <div className="mb-3 flex flex-col gap-2">
-          {" "}
           <Input
             placeholder="E-mail"
             type="email"
