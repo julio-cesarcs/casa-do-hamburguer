@@ -2,11 +2,14 @@ import { useState } from "react";
 import Input from "../components/Input";
 import { Link } from "react-router";
 import Button from "../components/Button";
+import { useNavigate } from "react-router";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+
+  const navigate = useNavigate();
 
   async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -35,14 +38,21 @@ const Login = () => {
         case 400:
           setError("Usuário e senha são obrigatórios");
           break;
+        case 401:
+          setError("Usuário e senha não conferem");
+          break;
         case 404:
           setError("Usuário não encontrado");
+          break;
+        case 500:
+          setError("Erro no servidor");
           break;
         default:
           setError("");
       }
 
       const data = await response.json();
+      navigate("/");
       console.log(data);
     } catch (error) {
       console.log(error);
